@@ -9,10 +9,4 @@ import { ShoppingListService } from './shopping-list/shpping-list.service';
 })
 
 export class AppComponent {
-  title = 'first-project';
-  loadedFeature = 'recipes';
-
-  onNavigate(feature: string) {
-    this.loadedFeature = feature;
-  }
 }
