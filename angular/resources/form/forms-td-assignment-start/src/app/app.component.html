@@ -1,7 +1,7 @@
 <div class="container">
   <div class="row">
     <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
-      <form (ngSubmit)="onSubmit()" #f="ngForm">
+      <form (ngSubmit)="onSubmit()" #signupForm="ngForm">
         <div class="form-group">
           <label for="email">Mail</label>
           <input
@@ -11,23 +11,23 @@
             ngModel
             name="email"
             required
+            email
             #email="ngModel"
           />
           <span class="help-block" *ngIf="!email.valid && email.touched"
-            >Please enter a valid Email!</span
-          >
+            >Please enter a valid Email!</span>
         </div>
         <div class="form-group">
-          <label for="email">Subscriptions</label>
+          <label for="subscription">Choose a Subscriptions</label>
           <select
             id="subscription"
             class="form-control"
-            [ngModel]="defaultValue"
+            [ngModel]="selectedSubscription"
             name="subscription"
           >
-            <option value="basic">Basic</option>
-            <option value="advanced">Advanced</option>
-            <option value="pro">Pro</option>
+            <option
+            *ngFor="let subscription of subscriptions"
+            [value]="subscription">{{subscription}}</option>
           </select>
         </div>
         <div class="form-group">
@@ -45,15 +45,15 @@
             >Please enter a valid Password!</span
           >
         </div>
+
+        <p *ngIf="!signupForm.valid && signupForm.touched">The form is invalid!</p>
         <button
-          type="submit"
-          class="btn btn-primary"
-          (click)="onSubmit()"
-          [disabled]="!f.valid"
-        >
-          Submit
-        </button>
-        <p *ngIf="!f.valid && f.touched">Invalid form</p>
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="!signupForm.valid"
+      >
+        Submit
+      </button>
       </form>
       <div class="row" *ngIf="submitted">
         <div class="col-xs-12">
@@ -63,7 +63,9 @@
           <p>Subscription: {{ data.subscription }}</p>
         </div>
       </div>
-
+    </div>
+  </div>
+</div>
       <!-- Add a Form with the following Inputs (and Validators)
            1) Mail address (should not be empty and should be an email address)
            2) A Dropdown which allows the user to select from three different Subscriptions ("Basic", "Advanced", "Pro")
@@ -76,6 +78,5 @@
            Upon submitting the form, you should simply print the Value of the Form to the Console.
            Optionally, display it in your template.
       -->
-    </div>
-  </div>
-</div>
+
+
