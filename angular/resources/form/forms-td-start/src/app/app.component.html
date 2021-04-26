@@ -71,7 +71,11 @@
             {{gender}}
     </label>
         </div>
-         
+        <button
+        type="submit"
+        class="btn btn-primary"
+        (click)="onSubmit()"
+        [disabled]="!f.valid">Submit</button>
       </form>
       <hr>
       <div class="row" *ngIf="submitted">
