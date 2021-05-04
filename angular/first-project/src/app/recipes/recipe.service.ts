@@ -7,29 +7,36 @@ import { Recipe } from './recipe.model';
 export class RecipeService {
   recipeChanged = new Subject<Recipe[]>();
 
-  private recipes: Recipe[] = [
-    new Recipe(
-      'Tasty Schnitzel',
-      'A super-tasty Schnitzel - just awesome!',
-      'https://www.kal-lehachana.co.il/wp-content/uploads/2019/09/IMG-20190609-WA0161-1024x576.jpg',
-      [
-        new Ingredient('Meat', 1),
-        new Ingredient('French Fries', 20)
-      ]
-    ),
-    new Recipe(
-      'Ravioli',
-      'Amazing ravioli, straight from Italy',
-      'https://img.mako.co.il/2010/06/24/ravioli_shamenet_pitriotcc.jpg',
-      [
-        new Ingredient('Flour', 500),
-        new Ingredient('Eggs', 5),
-        new Ingredient('Cream', 1)
-      ]
-    )
-  ];
+  // private recipes: Recipe[] = [
+  //   new Recipe(
+  //     'Tasty Schnitzel',
+  //     'A super-tasty Schnitzel - just awesome!',
+  //     'https://www.kal-lehachana.co.il/wp-content/uploads/2019/09/IMG-20190609-WA0161-1024x576.jpg',
+  //     [
+  //       new Ingredient('Meat', 1),
+  //       new Ingredient('French Fries', 20)
+  //     ]
+  //   ),
+  //   new Recipe(
+  //     'Ravioli',
+  //     'Amazing ravioli, straight from Italy',
+  //     'https://img.mako.co.il/2010/06/24/ravioli_shamenet_pitriotcc.jpg',
+  //     [
+  //       new Ingredient('Flour', 500),
+  //       new Ingredient('Eggs', 5),
+  //       new Ingredient('Cream', 1)
+  //     ]
+  //   )
+  // ];
+
+  private recipes: Recipe[] = [];
 
   constructor(private shoppingListService: ShoppingListService) {}
+
+  setRecipes(recipes: Recipe[]) {
+    this.recipes = recipes;
+    this.recipeChanged.next(this.recipes.slice());
+  }
 
   getRecipes() {
     return this.recipes.slice(); // return copy of the array not reference.
