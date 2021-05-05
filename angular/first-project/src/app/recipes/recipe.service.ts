@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { Ingredient } from '../shared/Ingredient.model';
 import { ShoppingListService } from '../shopping-list/shpping-list.service';
 import { Recipe } from './recipe.model';
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class RecipeService {
   recipeChanged = new Subject<Recipe[]>();
 
@@ -31,11 +31,12 @@ export class RecipeService {
 
   private recipes: Recipe[] = [];
 
-  constructor(private shoppingListService: ShoppingListService) {}
+  constructor(private shoppingListService: ShoppingListService) { }
 
   setRecipes(recipes: Recipe[]) {
     this.recipes = recipes;
     this.recipeChanged.next(this.recipes.slice());
+    // Subject vs BehaviourSubject
   }
 
   getRecipes() {

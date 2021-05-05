@@ -1,5 +1,6 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Observable } from 'rxjs';
 import { RecipeService } from 'src/app/recipes/recipe.service';
 import { Recipe } from '../recipe.model';
 
@@ -9,23 +10,17 @@ import { Recipe } from '../recipe.model';
   styleUrls: ['./recipe-list.component.css'],
 })
 export class RecipeListComponent implements OnInit {
-  recipes: Recipe[] = [];
+  public recipes: Observable<Recipe[]>;
 
   constructor(private recipeService: RecipeService,
-              private router: Router,
-              private route: ActivatedRoute) { }
+    private router: Router,
+    private route: ActivatedRoute) { }
 
   ngOnInit() {
-    this.recipeService.recipeChanged
-      .subscribe(
-        (recipes: Recipe[]) => {
-          this.recipes = recipes;
-        })
-
-    this.recipes = this.recipeService.getRecipes();
+    this.recipes = this.recipeService.recipeChanged;
   }
 
   onNewRecipe() {
-    this.router.navigate(['new'], {relativeTo: this.route})
+    this.router.navigate(['new'], { relativeTo: this.route })
   }
 }
