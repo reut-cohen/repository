@@ -1,40 +1,50 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
-import { Subscription } from "rxjs";
+import { Store } from "@ngrx/store";
+import { Observable, Subscription } from "rxjs";
+import { map } from 'rxjs/operators';
+import { Ingredient } from 'src/app/shared/Ingredient.model';
 import { LoggingService } from "../logging.service";
-import { Ingredient } from "../shared/Ingredient.model";
-import { ShoppingListService } from "./shpping-list.service"
-
+import { ShoppingListProducer } from './store/shopping-list.producer';
+import * as ShoppingListActions from './store/shopping-list.action';
+import * as fromApp from '../store/app.reducer'
 @Component({
   selector: 'app-shopping-list',
   templateUrl: './shopping-list.component.html',
   styleUrls: ['./shopping-list.component.css'],
-  providers: [ ShoppingListService ]
+  providers: []
 })
 
-export class ShoppingListComponent implements OnInit, OnDestroy {
-  ingredients: Ingredient[] = [];
+export class ShoppingListComponent implements OnInit {
+  public ingredients$: Observable<Ingredient[]>;
   private subscription: Subscription;
 
-  constructor(private shppingListService: ShoppingListService,
-              private loggingService: LoggingService) { }
+  constructor(
+    private loggingService: LoggingService,
+    private shoppingListProducer: ShoppingListProducer,
+    private store: Store<fromApp.AppState>) { }
 
   ngOnInit() {
-    this.ingredients = this.shppingListService.getIngredients();
-    this.subscription = this.shppingListService.ingredientsChanged
-      .subscribe(
-        (ingredients: Ingredient[]) => {
-          this.ingredients = ingredients;
-        }
-    );
+    // this.ingredients$ = this.shoppingListProducer.ingredients$;
+    this.ingredients$ = this.store.select('shoppingList')
+      .pipe(
+        map((shoppingList) => {
+          return shoppingList.shoppingListIngredients;
+        })
+      )
+    // this.ingredients = this.shppingListService.getIngredients();
+    // this.subscription = this.shppingListService.ingredientsChanged
+    //   .subscribe(
+    //     (ingredients: Ingredient[]) => {
+    //       this.ingredients = ingredients;
+    //     }
+    // );
 
     this.loggingService.printLog('Hello from ShoppingListComponent ngOnInit')
   }
-
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
-  }
-
-  onEditItem(index: number) {
-    this.shppingListService.startedEditing.next(index);
+  
+  public onEditItem(index: number): void {
+    this.shoppingListProducer.startEdit(index);
+    // this.store.dispatch(new ShoppingListActions.StartEdit(index));
+    // this.shoppingListService.startedEditing.next(index);
   }
 }

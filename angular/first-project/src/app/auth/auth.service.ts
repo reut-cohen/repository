@@ -1,10 +1,13 @@
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
-import { BehaviorSubject, throwError } from "rxjs";
+import { Store } from '@ngrx/store';
+import { throwError } from "rxjs";
 import { catchError, tap } from "rxjs/operators";
+import { environment } from '../../environments/environment';
+import * as fromApp from '../store/app.reducer';
+import * as AuthActions from './store/auth.action';
 import { User } from "./user.module";
-
 
 export interface AuthResponseData {
   kind: string;
@@ -18,21 +21,23 @@ export interface AuthResponseData {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  user = new BehaviorSubject<User>(null);
+  // user = new BehaviorSubject<User>(null);
   private tokenExpirationTimer: any;
 
   constructor(private http: HttpClient,
-              private router: Router) { }
+    private router: Router,
+    private store: Store<fromApp.AppState>) { }
 
   signup(email: string, password: string) {
     return this.http.post<AuthResponseData>(
-      'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBVj5lXPGXJLZWe-LTqh3MZ6JAThvL2RVY',
+      'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=' + environment.firebaseAPIKey,
       {
         email: email,
         password: password,
         returnSecureToken: true
       }
-    ).pipe(
+    )
+      .pipe(
       catchError(this.handleError),
       tap(resData => {
         this.handleAuthentication(
@@ -47,7 +52,7 @@ export class AuthService {
 
   login(email: string, password: string) {
     return this.http.post<AuthResponseData>(
-      'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBVj5lXPGXJLZWe-LTqh3MZ6JAThvL2RVY',
+      'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=' + environment.firebaseAPIKey,
       {
         email: email,
         password: password,
@@ -85,14 +90,23 @@ export class AuthService {
     );
 
     if (loadedUser.token) {
-      this.user.next(loadedUser);
+      // this.user.next(loadedUser);
+      this.store.dispatch(new AuthActions.Login({
+        email: loadedUser.email,
+        userId: loadedUser.id,
+        token: loadedUser.token,
+        expirationDate: new Date(userData._tokenExpirationDate)
+      }
+
+      ))
       const expirationDuration = new Date(userData._tokenExpirationDate).getTime() - new Date().getTime()
       this.autoLogout(expirationDuration);
     }
   }
 
   logout() {
-    this.user.next(null);
+    // this.user.next(null);
+    this.store.dispatch(new AuthActions.Logout());
     this.router.navigate(['./auth']);
     localStorage.removeItem('userData');
     if (this.tokenExpirationTimer) {
@@ -112,17 +126,27 @@ export class AuthService {
 
 
   // create a user.
-  private handleAuthentication(email: string, userId: string, token: string, expiresIn: number) {
-    const expirationDate = new Date(
-      new Date().getTime() + expiresIn * 1000
-    );
+  private handleAuthentication(
+    email: string,
+    userId: string,
+    token: string,
+    expiresIn: number
+  ): void {
+    const expirationDate = new Date(new Date().getTime() + expiresIn * 1000);
     const user = new User(
       email,
       userId,
       token,
       expirationDate
     );
-    this.user.next(user);
+    this.store.dispatch(new AuthActions.Login({
+      email: user.email,
+      userId: user.id,
+      token: user.token,
+      expirationDate: expirationDate
+    })
+    );
+    // this.user.next(user);
     this.autoLogout(expiresIn * 1000);
     localStorage.setItem('userData', JSON.stringify(user));
   }

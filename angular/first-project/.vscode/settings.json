@@ -1,5 +1,7 @@
 {
     "cSpell.words": [
         "signup"
-    ]
+    ],
+    "editor.renderFinalNewline": false,
+    "files.trimFinalNewlines": true
 }

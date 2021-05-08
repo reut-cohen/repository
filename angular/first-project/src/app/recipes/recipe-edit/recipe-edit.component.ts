@@ -1,6 +1,5 @@
-import { ThisReceiver } from '@angular/compiler';
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormArray, FormControl, FormControlName, FormGroup, Validators } from '@angular/forms';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { RecipeService } from '../recipe.service';
@@ -28,7 +27,6 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
           this.id = +params['id'];
           this.editMode = params['id'] != null;
           this.initForm();
-          // console.log(this.editMode);
         });
   }
 
@@ -37,7 +35,7 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
 
   }
 
-  get controls() {
+  get ingredientsControls() {
     return (<FormArray>this.recipeForm.get('ingredients')).controls;
   }
 
