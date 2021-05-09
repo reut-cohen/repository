@@ -1,12 +1,11 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { Store } from "@ngrx/store";
-import { Observable, Subscription } from "rxjs";
+import { Observable } from "rxjs";
 import { map } from 'rxjs/operators';
-import { Ingredient } from 'src/app/shared/Ingredient.model';
+import { Ingredient } from '../shared/Ingredient.model'
 import { LoggingService } from "../logging.service";
-import { ShoppingListProducer } from './store/shopping-list.producer';
+import * as fromApp from '../store/app.reducer';
 import * as ShoppingListActions from './store/shopping-list.action';
-import * as fromApp from '../store/app.reducer'
 @Component({
   selector: 'app-shopping-list',
   templateUrl: './shopping-list.component.html',
@@ -16,11 +15,9 @@ import * as fromApp from '../store/app.reducer'
 
 export class ShoppingListComponent implements OnInit {
   public ingredients$: Observable<Ingredient[]>;
-  private subscription: Subscription;
 
   constructor(
     private loggingService: LoggingService,
-    private shoppingListProducer: ShoppingListProducer,
     private store: Store<fromApp.AppState>) { }
 
   ngOnInit() {
@@ -28,23 +25,15 @@ export class ShoppingListComponent implements OnInit {
     this.ingredients$ = this.store.select('shoppingList')
       .pipe(
         map((shoppingList) => {
-          return shoppingList.shoppingListIngredients;
+          return shoppingList.ingredients;
         })
       )
-    // this.ingredients = this.shppingListService.getIngredients();
-    // this.subscription = this.shppingListService.ingredientsChanged
-    //   .subscribe(
-    //     (ingredients: Ingredient[]) => {
-    //       this.ingredients = ingredients;
-    //     }
-    // );
 
     this.loggingService.printLog('Hello from ShoppingListComponent ngOnInit')
   }
-  
+
   public onEditItem(index: number): void {
-    this.shoppingListProducer.startEdit(index);
-    // this.store.dispatch(new ShoppingListActions.StartEdit(index));
-    // this.shoppingListService.startedEditing.next(index);
+    this.store.dispatch(ShoppingListActions.startEdit({ index: index }));
+    // this.shoppingListProducer.startEdit(index);
   }
 }

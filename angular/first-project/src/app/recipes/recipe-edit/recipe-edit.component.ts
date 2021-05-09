@@ -60,15 +60,17 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
     if (this.editMode) {
       // this.recipeService.updateRecipe(this.id, this.recipeForm.value)
       this.store.dispatch(
-        new RecipesActions.UpdateRecipe({
+        RecipesActions.updateRecipe({
           index: this.id,
-          newRecipe: this.recipeForm.value
+          recipe: this.recipeForm.value
         })
       );
     } else {
       // this.recipeService.addRecipe(this.recipeForm.value);
       this.store.dispatch(
-        new RecipesActions.AddRecipe(this.recipeForm.value));
+        RecipesActions.addRecipe({
+          recipe: this.recipeForm.value
+        }));
     }
     this.onCancel();
   }
@@ -83,7 +85,10 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
 
   public onDelete(): void {
     // this.recipeService.deleteRecipe(this.id);
-    this.store.dispatch(new RecipesActions.DeleteRecipe(this.id));
+    this.store.dispatch(
+      RecipesActions.deleteRecipe({
+        index: this.id
+      }));
     this.router.navigate(['../../'], { relativeTo: this.route });
   }
 

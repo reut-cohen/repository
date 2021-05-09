@@ -34,11 +34,11 @@ export class AuthComponent implements OnInit, OnDestroy {
     });
   }
 
-  public onSwitchMode(): void  {
+  public onSwitchMode(): void {
     this.isLoginMode = !this.isLoginMode;
   }
 
-  public onSubmit(form: NgForm): void  {
+  public onSubmit(form: NgForm): void {
     if (!form.valid) {
       return;
     }
@@ -47,13 +47,13 @@ export class AuthComponent implements OnInit, OnDestroy {
 
     if (this.isLoginMode) {
       // authObs = this.authService.login(email, password);
-      this.store.dispatch(new AuthActions.LoginStart({
+      this.store.dispatch(AuthActions.loginStart({
         email: email,
         password: password
       })
       );
     } else { // new user
-      this.store.dispatch(new AuthActions.SignupStart({
+      this.store.dispatch(AuthActions.signupStart({
         email: email,
         password: password
       })
@@ -63,11 +63,11 @@ export class AuthComponent implements OnInit, OnDestroy {
     form.reset();
   }
 
-  public onHandleError(): void  {
-    this.store.dispatch(new AuthActions.ClearError())
+  public onHandleError(): void {
+    this.store.dispatch(AuthActions.clearError())
   }
 
-  public ngOnDestroy(): void  {
+  public ngOnDestroy(): void {
     if (this.closeSub) {
       this.closeSub.unsubscribe();
     }
@@ -76,7 +76,7 @@ export class AuthComponent implements OnInit, OnDestroy {
     }
   }
 
-  private showErrorAlert(message: string): void  {
+  private showErrorAlert(message: string): void {
     // const alertCmp = new AlertComponent(); cant do that wont work
     const alertComponentFactory = this.componentFactoryResolver.resolveComponentFactory(
       AlertComponent
