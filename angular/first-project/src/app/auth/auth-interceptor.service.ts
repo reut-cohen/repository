@@ -10,8 +10,9 @@ import { Store } from "@ngrx/store";
 export class AuthInterceptorService implements HttpInterceptor {
 
 
-  constructor(private authService: AuthService,
-  private store: Store<fromApp.AppState>) { }
+  constructor(
+    private authService: AuthService,
+    private store: Store<fromApp.AppState>) { }
 
   // for adding the token to the request before sent. but just if user exists.
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
