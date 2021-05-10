@@ -1,5 +1,13 @@
-import { animate, group, keyframes, state, style, transition, trigger } from '@angular/animations';
 import { Component } from '@angular/core';
+import {
+  trigger,
+  state,
+  style,
+  transition,
+  animate,
+  keyframes,
+  group
+} from '@angular/animations';
 
 @Component({
   selector: 'app-root',
@@ -15,7 +23,7 @@ import { Component } from '@angular/core';
         transform: 'translateX(100px)'
       })),
       transition('normal <=> highlighted', animate(300)),
-      // transition('highlighted => normal', animate(800)),
+      // transition('highlighted => normal', animate(800))
     ]),
     trigger('wildState', [
       state('normal', style({
@@ -40,7 +48,7 @@ import { Component } from '@angular/core';
           borderRadius: '50px'
         })),
         animate(500)
-      ]),
+      ])
     ]),
     trigger('list1', [
       state('in', style({
@@ -52,12 +60,12 @@ import { Component } from '@angular/core';
           opacity: 0,
           transform: 'translateX(-100px)'
         }),
-        animate(1000)
+        animate(300)
       ]),
       transition('* => void', [
         animate(300, style({
-          opacity: 0,
-          transform: 'translateX(+100px)'
+          transform: 'translateX(100px)',
+          opacity: 0
         }))
       ])
     ]),
@@ -69,27 +77,26 @@ import { Component } from '@angular/core';
       transition('void => *', [
         animate(1000, keyframes([
           style({
-            opacity: 0,
             transform: 'translateX(-100px)',
+            opacity: 0,
             offset: 0
           }),
           style({
-            opacity: 0.5,
             transform: 'translateX(-50px)',
+            opacity: 0.5,
             offset: 0.3
           }),
           style({
-            opacity: 1,
             transform: 'translateX(-20px)',
+            opacity: 1,
             offset: 0.8
           }),
           style({
+            transform: 'translateX(0px)',
             opacity: 1,
-            transform: 'translateX(0)',
             offset: 1
-          }),
+          })
         ]))
-
       ]),
       transition('* => void', [
         group([
@@ -97,43 +104,41 @@ import { Component } from '@angular/core';
             color: 'red'
           })),
           animate(800, style({
-            opacity: 0,
-            transform: 'translateX(+100px)'
-          })),
-
+            transform: 'translateX(100px)',
+            opacity: 0
+          }))
         ])
       ])
-    ])
-
+    ]),
   ]
-
 })
 export class AppComponent {
-  public state = 'normal'
-  public wildState = 'normal'
-  public list = ['Milk', 'Sugar', 'Bread'];
+  state = 'normal';
+  wildState = 'normal';
+  list = ['Milk', 'Sugar', 'Bread'];
 
-  public onAnimate(): void {
-    this.state === 'normal' ? this.state = 'highlighted' : this.state = 'normal';
-    this.wildState === 'normal' ? this.wildState = 'highlighted' : this.wildState = 'normal';
+  onAnimate() {
+    this.state == 'normal' ? this.state = 'highlighted' : this.state = 'normal';
+    this.wildState == 'normal' ? this.wildState = 'highlighted' : this.wildState = 'normal';
   }
 
-  public onShrink() {
+  onShrink() {
     this.wildState = 'shrunken';
-  }
-
-  public onDelete(item) {
-    this.list.splice(this.list.indexOf(item), 1);
-  }
-
-  public animatedStarted(event) {
-    console.log(event);
-  }
-  public animatedEnded(event) {
-    console.log(event);
   }
 
   onAdd(item) {
     this.list.push(item);
+  }
+
+  onDelete(item) {
+    this.list.splice(this.list.indexOf(item), 1);
+  }
+
+  animationStarted(event) {
+    console.log(event);
+  }
+
+  animationEnded(event) {
+    console.log(event);
   }
 }
