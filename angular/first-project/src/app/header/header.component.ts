@@ -21,8 +21,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.userSub = this.store.select('auth').subscribe(
       user => {
-      this.isAuthenticated = !user ? false : true; // !!user not(not)
-    });
+        this.isAuthenticated = !user ? false : true; // !!user not(not)
+      });
   }
 
   public ngOnDestroy(): void {
@@ -33,17 +33,17 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   public onSaveData(): void {
-    this.store.dispatch(new RecipesActions.StoreRecipes());
+    this.store.dispatch(RecipesActions.storeRecipes());
     // this.dataStorageService.storeRecipes();
   }
 
   public onFetchData(): void {
-    this.store.dispatch(new RecipesActions.FetchRecipes());
+    this.store.dispatch(RecipesActions.fetchRecipes());
     // this.dataStorageService.fetchRecipes().subscribe(() => { });
   }
 
   public onLogout(): void {
-    this.store.dispatch(new AuthActions.Logout());
+    this.store.dispatch(AuthActions.logout());
   }
 
 }
